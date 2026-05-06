@@ -1,0 +1,19 @@
+# 1. Create the .gitignore file with the folders to ignore
+@"
+venv/
+models/
+results_tune/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+.env
+data/claim_data/AFND/Dataset/
+"@ > .gitignore
+
+# 2. Stage the .gitignore and all other files
+git add .
+
+# 3. Create the commit
+git commit -m "Initial commit: include data folder, ignore AFND Dataset, models, venv, and tuning results"

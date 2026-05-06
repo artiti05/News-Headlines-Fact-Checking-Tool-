@@ -1,0 +1,6 @@
+https://www.sciencedirect.com/science/article/pii/S2352340922003493
+https://data.mendeley.com/datasets/67mhx6hhzd/1
+https://aclanthology.org/2021.wanlp-1.26/
+https://huggingface.co/datasets/asas-ai/AraFacts
+https://github.com/UBC-NLP/wanlp2020_arabic_fake_news_detection
+https://github.com/latynt/ans

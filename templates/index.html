@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كاشف الخبر | نظام التحقق الذكي من الأخبار</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>كاشف الخبر</h1>
+            <p class="subtitle">نظام ذكي للتحقق من صحة الأخبار العربية باستخدام الذكاء الاصطناعي</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Input Card -->
+            <section class="card">
+                <div class="input-group">
+                    <label for="newsTitle">عنوان الخبر (اختياري)</label>
+                    <input type="text" id="newsTitle" placeholder="مثال: قرار جديد بخصوص التعليم...">
+                </div>
+                <div class="input-group">
+                    <label for="newsText">محتوى الخبر</label>
+                    <textarea id="newsText" rows="6" placeholder="الصق نص الخبر هنا للتحقق منه..."></textarea>
+                </div>
+                <button id="verifyBtn">
+                    <span class="btn-text">بدء التحقق</span>
+                    <div class="loader" id="loader"></div>
+                </button>
+
+                <!-- Processing Steps -->
+                <div class="status-steps" id="statusSteps" style="display: none;">
+                    <div class="step" id="step1">
+                        <span class="step-icon">🔍</span>
+                        <span>تحليل النص واستخراج الادعاء الأساسي</span>
+                    </div>
+                    <div class="step" id="step2">
+                        <span class="step-icon">🌐</span>
+                        <span>البحث في المصادر الموثوقة (RAG)</span>
+                    </div>
+                    <div class="step" id="step3">
+                        <span class="step-icon">⚖️</span>
+                        <span>المطابقة المنطقية والتحقق من الصحة</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Card -->
+            <section class="card results-container" id="resultsContainer">
+                <div id="verdictBadge" class="verdict-badge"></div>
+                
+                <div class="result-section">
+                    <label>الادعاء المستخرج:</label>
+                    <p id="extractedClaim" style="font-style: italic; margin-bottom: 1.5rem;"></p>
+                </div>
+                
+                <div class="result-section">
+                    <label>تحليل الذكاء الاصطناعي (التفسير):</label>
+                    <div id="aiReasoning" class="reasoning-box"></div>
+                </div>
+
+                <div class="result-section">
+                    <label>الأدلة المصدرية المسترجعة:</label>
+                    <div id="evidenceList" class="evidence-list">
+                        <!-- Evidence items will be injected here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <aside class="sidebar">
+            <section class="card">
+                <h2><span>🕒</span> عمليات سابقة</h2>
+                <div id="historyList">
+                    <!-- History items will be injected here -->
+                </div>
+            </section>
+        </aside>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Core AI and Data
+#torch cuda 13.1 
+transformers
+sentence-transformers
+scikit-learn
+pandas
+numpy
+datasets
+# Vector Database
+chromadb
+
+# Web Scraping
+beautifulsoup4
+feedparser
+requests
+
+# LLM Inference
+ollama
+
+# Web App
+flask
