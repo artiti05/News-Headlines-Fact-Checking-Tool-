@@ -17,5 +17,9 @@ requests
 # LLM Inference
 ollama
 
+
 # Web App
 flask
+
+# Visualization
+matplotlib

@@ -24,6 +24,11 @@ HISTORY_FILE = os.path.join(BASE_DIR, 'data', 'history.json')
 # Ensure data directory exists
 os.makedirs(os.path.join(BASE_DIR, 'data'), exist_ok=True)
 
+# --- Persistent Initialization (Load once at startup) ---
+logging.info("Initializing Live Retriever and MARBERT Verifier...")
+retriever = LiveClaimRetriever()
+verifier = EntailmentVerifier()
+
 def unload_ollama_model():
     """Forces Ollama to unload the model to free VRAM."""
     try:
@@ -66,19 +71,17 @@ def verify():
         results["claim"] = claim
         results["steps"].append("تم استخراج الادعاء الرئيسي بنجاح")
 
-        # Free VRAM after Qwen
+        # Free VRAM after Qwen so MARBERT has more room for high max_length
         unload_ollama_model()
 
         # Step 2: Retrieval (Live DuckDuckGo RAG + E5)
         logging.info("Step 2: Retrieving live evidence...")
-        retriever = LiveClaimRetriever()
         evidence_chunks = retriever.retrieve_evidence(claim, top_k=3)
         results["evidence"] = evidence_chunks
         results["steps"].append(f"تم العثور على {len(evidence_chunks)} من الأدلة المصدرية الحية")
 
         # Step 3: Verification (MARBERT)
         logging.info("Step 3: Verifying entailment...")
-        verifier = EntailmentVerifier()
         
         # Combine evidence text for the verifier
         full_evidence = " ".join([c['text'] for c in evidence_chunks])
@@ -101,7 +104,7 @@ def verify():
 
         results["verdict"] = en_label
         results["ar_verdict"] = ar_label
-        results["confidence"] = float(confidence)
+        results["confidence"] = round(float(confidence), 2) # Round for cleaner UI
         results["steps"].append(f"تم تحليل موثوقية المصادر ({results['source_trust']})")
 
         # Clean Evidence for UI
@@ -122,15 +125,16 @@ def verify():
 
         # Smart Reasoning Generation
         if not evidence_chunks:
-            reasoning = f"لم أتمكن من العثور على أي تغطية إخبارية موثوقة للادعاء: '{claim}'. نظراً لعدم وجود أي مصادر رسمية (مثل الجزيرة، بي بي سي، وغيرها) تؤكد هذا الخبر، فإنه يُعتبر غير مؤكد ويرجح أنه شائعة."
+            reasoning = f"لم أتمكن من العثور على أي تغطية إخبارية موثوقة للادعاء: '{claim}'. نظراً لعدم وجود أي مصادر رسمية تؤكد هذا الخبر، فإنه يُعتبر غير مؤكد."
         else:
-            sources_str = " و ".join(list(set([e['source'] for e in clean_evidence])))
+            sources_list = list(set([e['source'] for e in clean_evidence]))
+            sources_str = " و ".join(sources_list)
             if ar_label == "صحيح":
-                reasoning = f"هذا الادعاء صحيح. تم تأكيده من خلال مصادر موثوقة مثل ({sources_str}) والتي أوردت تقارير تطابق الادعاء المذكور."
+                reasoning = f"هذا الادعاء صحيح. تم تأكيده من خلال تقارير متطابقة في ({sources_str})."
             elif ar_label == "خاطئ":
-                reasoning = f"هذا الادعاء خاطئ أو مضلل. المصادر الموثوقة مثل ({sources_str}) قدمت أدلة تتناقض تماماً مع هذا الادعاء."
+                reasoning = f"هذا الادعاء خاطئ. التقارير في ({sources_str}) قدمت أدلة تتناقض تماماً مع هذا الخبر."
             else:
-                reasoning = f"هذا الادعاء غير مؤكد. على الرغم من وجود تقارير ذات صلة في ({sources_str})، إلا أن الأدلة المتوفرة لا تكفي لإثبات أو نفي الادعاء بشكل قاطع."
+                reasoning = f"هذا الادعاء غير مؤكد حالياً، رغم وجود تغطية في ({sources_str})."
                 
         results["reasoning"] = reasoning
 

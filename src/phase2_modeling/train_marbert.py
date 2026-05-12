@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 
 # Config
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-DATASET_PATH = os.path.join(BASE_DIR, 'data', 'processed', 'nli_dataset_optimized.csv')
+DATASET_PATH = os.path.join(BASE_DIR, 'data', 'processed', 'final_balanced_dataset.csv')
 MODEL_OUTPUT_DIR = os.path.join(BASE_DIR, 'models', 'marbert_factcheck_finetuned')
 
 os.makedirs(MODEL_OUTPUT_DIR, exist_ok=True)
